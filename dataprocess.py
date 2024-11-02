@@ -96,12 +96,12 @@ for i in range(2):
     )
 
 # 添加圖表的總標題
-f.suptitle("Variability in Coral Cover Predictions across Configurations (std)", fontsize=12, fontweight='bold')
+f.suptitle("Variability in Coral Cover Predictions across Configurations", fontsize=12, fontweight='bold')
 
 # 添加統一的顏色條，位於右側
 cax = f.add_subplot(gs[:, 1])  # 使用 GridSpec 的右側欄位作為顏色條的位置
 cbar = plt.colorbar(scatter, cax=cax, orientation='vertical')
-
+cbar.set_label("Standard Deviation", fontsize=12)
 
 # 保存圖像到 output 資料夾，設定 dpi=400
 output_dir = "output"
