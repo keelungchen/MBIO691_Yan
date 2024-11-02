@@ -108,7 +108,11 @@ output_dir = "output"
 output_path = os.path.join(output_dir, "variability_coral_cover_predictions.png")
 plt.savefig(output_path, dpi=400)
 
+# 圖說 地理範圍、年分意義、點的大小、顏色意義 越濃差異越大、投影坐標
+
 ###Fig 2###
+
+
 
 
 
