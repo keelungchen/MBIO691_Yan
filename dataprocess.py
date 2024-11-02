@@ -45,11 +45,11 @@ ax = f.add_subplot(1, 1, 1, projection=ccrs.Robinson(central_longitude=central_l
 ax.set_extent([central_lon - width, central_lon + width, central_lat - height, central_lat + height], ccrs.PlateCarree())
 
 # 加入地圖的海岸線和陸地特徵
-ax.add_feature(cfeature.COASTLINE, linewidth=0.5)
-ax.add_feature(cfeature.LAND, facecolor='#b6cbcf', edgecolor='#57868f', linewidth=0.5)
+ax.add_feature(cfeature.COASTLINE, linewidth=0.1)
+ax.add_feature(cfeature.LAND, facecolor='#b6cbcf', edgecolor='#57868f', linewidth=0.1)
 
 # 添加經緯度線
-gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linestyle="--", color="gray", alpha=0.5)
+gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linestyle="-", color='#57868f', alpha=0.2)
 gl.top_labels = False  # 移除頂部的緯度標籤
 gl.right_labels = False  # 移除右側的經度標籤
 gl.xlocator = mticker.FixedLocator(np.arange(-180, 210, 30))  # 設定經度間隔
@@ -63,11 +63,9 @@ scatter = ax.scatter(
     data_std['longitude'],
     data_std['latitude'],
     c=variability,
-    cmap='coolwarm',
+    cmap='Reds',
     s=10,
-    transform=ccrs.PlateCarree(),
-    edgecolor='k',
-    linewidths=0.1
+    transform=ccrs.PlateCarree()
 )
 
 # 加入顏色條並放置於底部
