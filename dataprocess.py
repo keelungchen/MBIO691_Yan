@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt 
+import matplotlib.ticker as mticker
 import seaborn as sns
 import pandas as pd
 
@@ -21,7 +22,7 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 
 # 計算每個地點的各模型配置的均值和標準差
-# 透過 groupby 進行分組，並計算所有模型的均值和標準差
+data['lon_lat'] = list(zip(data.longitude, data.latitude))
 data_mean = data.groupby('lon_lat').mean().drop(columns='model')
 data_std = data.groupby('lon_lat').std().drop(columns='model')
 
@@ -29,15 +30,33 @@ data_std = data.groupby('lon_lat').std().drop(columns='model')
 data_mean[['longitude', 'latitude']] = pd.DataFrame(data_mean.index.tolist(), index=data_mean.index)
 data_std[['longitude', 'latitude']] = pd.DataFrame(data_std.index.tolist(), index=data_std.index)
 
-# 創建等距圓柱投影，設置中心經度為180度
-plt.figure(figsize=(12, 8))
-ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180))
+# 設置中心經度和可視化範圍
+central_lon = 170
+central_lat = 0
+width = 140
+height = 45
 
-# 加入海岸線和國界
-ax.add_feature(cfeature.COASTLINE)
-ax.add_feature(cfeature.BORDERS)
+# 創建圖表，設定等距圓柱投影和子圖布局
+f = plt.figure(constrained_layout=True, figsize=(13.8, 5))
+ax = f.add_subplot(1, 1, 1, projection=ccrs.Robinson(central_longitude=central_lon))
 
-# 繪製變異性（例如 coral_cover_2100 的標準差）
+# 設置地圖顯示範圍
+ax.set_extent([central_lon - width, central_lon + width, central_lat - height, central_lat + height], ccrs.PlateCarree())
+
+# 加入地圖的海岸線和陸地特徵
+ax.add_feature(cfeature.COASTLINE, linewidth=0.5)
+ax.add_feature(cfeature.LAND, facecolor='#b6cbcf', edgecolor='#57868f', linewidth=0.5)
+
+# 添加經緯度線
+gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linestyle="--", color="gray", alpha=0.5)
+gl.top_labels = False  # 移除頂部的緯度標籤
+gl.right_labels = False  # 移除右側的經度標籤
+gl.xlocator = mticker.FixedLocator(np.arange(-180, 210, 30))  # 設定經度間隔
+gl.ylocator = mticker.FixedLocator(np.arange(-90, 100, 30))   # 設定緯度間隔
+gl.xlabel_style = {'size': 10, 'color': '#57868f'}
+gl.ylabel_style = {'size': 10, 'color': '#57868f'}
+
+# 繪製變異性資料（以 coral_cover_2100 的標準差為例）
 variability = data_std['coral_cover_2100'].values
 scatter = ax.scatter(
     data_std['longitude'],
@@ -45,13 +64,23 @@ scatter = ax.scatter(
     c=variability,
     cmap='coolwarm',
     s=10,
-    transform=ccrs.PlateCarree()
+    transform=ccrs.PlateCarree(),
+    edgecolor='k',
+    linewidths=0.1
 )
 
-# 加入顏色條並設定在下方顯示
-cbar = plt.colorbar(scatter, orientation='horizontal', pad=0.05)  # 使用水平顯示並調整距離
-cbar.set_label('Variability in Coral Cover Predictions (km²)')
+# 加入顏色條並放置於底部
+cbar = plt.colorbar(scatter, orientation='horizontal', pad=0.05)
+cbar.set_label('Variability in Coral Cover Predictions (km²)', fontsize=12)
+cbar.ax.tick_params(labelsize=10)
+
+# 設定標題並顯示地圖
+plt.title("Variability in Coral Cover Predictions across Configurations (2100)", fontsize=14)
 plt.show()
+#############
+
+
+
 
 ###Fig 2###
 
