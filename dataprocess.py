@@ -15,16 +15,17 @@ data['lon_lat'] = list(zip(data.longitude, data.latitude))
 # Display a summary
 #data
 
-###Fig 1###
+##########################################
+# Fig. 1                                 #
+##########################################
 #A map showing variability in model predictions across the 12 configurations (e.g. where the configurations closely agree, and where they differ).
 #Laod map library
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 
 # 計算每個地點的各模型配置的均值和標準差
-data['lon_lat'] = list(zip(data.longitude, data.latitude))
-data_mean = data.groupby('lon_lat').mean().drop(columns='model')
-data_std = data.groupby('lon_lat').std().drop(columns='model')
+data_mean = data.groupby('lon_lat').mean()
+data_std = data.groupby('lon_lat').std()
 
 # 將經緯度重新拆分為單獨的欄位
 data_mean[['longitude', 'latitude']] = pd.DataFrame(data_mean.index.tolist(), index=data_mean.index)
