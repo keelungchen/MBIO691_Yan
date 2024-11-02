@@ -111,7 +111,48 @@ plt.savefig(output_path, dpi=400)
 # 圖說 地理範圍、年分意義、點的大小、顏色意義 越濃差異越大、投影坐標
 
 ###Fig 2###
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
+# 載入數據
+data = pd.read_csv('data/coral_forecast.csv', skiprows=[1])
+
+# 計算珊瑚覆蓋率變化百分比
+data['coral_cover_change'] = ((data['coral_cover_2100'] - data['coral_cover_2020']) / data['coral_cover_2020']) * 100
+
+# 計算 SST 和 pH 變化
+data['SST_change'] = data['SST_2100'] - data['SST_2020']
+data['pH_change'] = data['pH_2100'] - data['pH_2020']
+
+# 移除異常值 (範圍設為 -100% 到 100%)
+filtered_data = data[(data['coral_cover_change'] >= -100) & (data['coral_cover_change'] <= 100)]
+
+# 繪製圖形
+plt.figure(figsize=(10, 6))
+sns.scatterplot(
+    x='SST_change', 
+    y='coral_cover_change', 
+    hue='pH_change', 
+    size='SST_seasonal', 
+    sizes=(20, 200), 
+    data=filtered_data, 
+    palette='coolwarm', 
+    edgecolor='none'
+)
+
+# 添加標題和標籤
+plt.title('Predicted Percentage Change in Coral Cover Over 21st Century')
+plt.xlabel('SST Change (2100 - 2020) (°C)')
+plt.ylabel('Coral Cover Change (%)')
+
+# 加入色條和大小圖例
+plt.colorbar(label='pH Change (2100 - 2020)')
+plt.legend(title='SST Seasonal Cycle')
+
+# 顯示圖形
+plt.show()
 
 
 
