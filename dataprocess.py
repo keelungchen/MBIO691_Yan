@@ -136,10 +136,11 @@ sns.scatterplot(
     y='coral_cover_change', 
     hue='pH_change', 
     size='SST_seasonal', 
-    sizes=(20, 200), 
+    sizes=(1, 10), 
     data=filtered_data, 
     palette='coolwarm', 
-    edgecolor='none'
+    edgecolor='none',
+    alpha = 0.5
 )
 
 # 添加標題和標籤
