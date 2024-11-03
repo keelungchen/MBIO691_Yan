@@ -24,11 +24,11 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from matplotlib.gridspec import GridSpec
 
-## 計算每個地點的各模型配置的均值和標準差
+# Calculate the mean and std of models in each lon_lat
 data_mean = data.groupby('lon_lat').mean()
 data_std = data.groupby('lon_lat').std()
 
-# 將經緯度重新拆分為單獨的欄位
+# sepearte lon_lat into depentdent column again for map plot
 data_mean[['longitude', 'latitude']] = pd.DataFrame(data_mean.index.tolist(), index=data_mean.index)
 data_std[['longitude', 'latitude']] = pd.DataFrame(data_std.index.tolist(), index=data_std.index)
 
@@ -82,7 +82,8 @@ for i in range(2):
         vmin=vmin, # Sets the minimum value for color mapping
         vmax=vmax, # Sets the maximum value for color mapping
         reduce_C_function=np.mean,  # Specifies that values in each hexagon should be averaged rather than summed
-        transform=ccrs.PlateCarree() #coordinates are in Plate Carree projection
+        transform=ccrs.PlateCarree(), #coordinates are in Plate Carree projection
+        alpha=1
     )
 
     # 在地圖左下角顯示年份標題
@@ -110,5 +111,4 @@ output_dir = "output"
 output_path = os.path.join(output_dir, "fig1.png")
 plt.savefig(output_path, dpi=300)
 
-plt.show()
 # 圖說 地理範圍、年分意義、點的大小、顏色意義 越濃差異越大、投影坐標

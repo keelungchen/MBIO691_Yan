@@ -42,7 +42,7 @@ def remove_outliers(df, columns, threshold=1.5):
 data_mean_clean = remove_outliers(data_mean, ['coral_cover_change', 'SST_change', 'SST_seasonal', 'pH_change', 'PAR'])
 
 # 繪製清理後的數據
-plt.figure(figsize=(8, 6))
+plt.figure(figsize=(8, 6), constrained_layout=True)  # 使用 constrained_layout=True 自動調整佈局
 
 # 定義要繪製的變數列表
 variables = ['SST_change', 'SST_seasonal', 'pH_change', 'PAR']
@@ -69,6 +69,3 @@ for i, var in enumerate(variables, 1):
 output_dir = "output"
 output_path = os.path.join(output_dir, "Fig2.png")
 plt.savefig(output_path, dpi=300)
-
-# 顯示圖表
-plt.show()
