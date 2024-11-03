@@ -241,7 +241,7 @@ for i, var in enumerate(variables, 1):
     y = data_mean_clean['coral_cover_change']
     
     # 繪製灰色散點
-    plt.scatter(x, y, color='gray', alpha=0.6, s=1)
+    plt.scatter(x, y, color='gray', alpha=0.6, s=0.1)
     
     # 使用線性回歸添加相關性線
     slope, intercept, r_value, p_value, std_err = linregress(x, y)
@@ -257,3 +257,8 @@ plt.tight_layout()
 
 # 顯示圖表
 plt.show()
+
+
+##########################################
+# Fig. 4                                 #
+##########################################
