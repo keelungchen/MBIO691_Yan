@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt 
 import matplotlib.ticker as mticker
-import seaborn as sns
 import pandas as pd
 import os
 
@@ -60,35 +59,36 @@ for i in range(2):
 
     # 加入海岸線和陸地特徵
     ax.add_feature(cfeature.COASTLINE, linewidth=0.1)
-    ax.add_feature(cfeature.LAND, facecolor='#b6cbcf', edgecolor='#57868f', linewidth=0.1)
+    ax.add_feature(cfeature.LAND, facecolor='#b6cbcf', edgecolor='#57868f', linewidth=0.5)
 
     # 添加經緯度線
-    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linestyle="-", color='#57868f', alpha=0.2)
+    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linestyle="-", color='#57868f', alpha=0.2, linewidth=1)
     gl.top_labels = False
     gl.right_labels = False
     gl.xlocator = mticker.FixedLocator(np.arange(-180, 210, 30))
     gl.ylocator = mticker.FixedLocator(np.arange(-90, 100, 30))
-    gl.xlabel_style = {'size': 10, 'color': '#57868f'}
-    gl.ylabel_style = {'size': 10, 'color': '#57868f'}
+    gl.xlabel_style = {'size': 16, 'color': '#57868f'}
+    gl.ylabel_style = {'size': 16, 'color': '#57868f'}
 
     # 繪製變異性資料點，設置相同的 vmin 和 vmax 來保持顏色一致
-    scatter = ax.scatter(
+    # Use hexbin to show density
+    hexbin = ax.hexbin(
         data_std['longitude'],
         data_std['latitude'],
-        c=data_values[i],
+        C=data_values[i],
+        gridsize=30,  # Adjust grid size
         cmap=colormaps[i],
-        s=5,
+        mincnt=1,  # Show only cells with at least 1 point
         vmin=vmin,
         vmax=vmax,
-        transform=ccrs.PlateCarree(),
-        edgecolor='none', 
-        alpha=0.5
+        transform=ccrs.PlateCarree()
     )
+
     # 在地圖左下角顯示年份標題
     ax.text(
         0.05, 0.1, titles[i], 
         transform=ax.transAxes, 
-        fontsize=14, 
+        fontsize=24, 
         color='#57868f', 
         fontweight='bold',
         ha='left', 
@@ -96,16 +96,18 @@ for i in range(2):
     )
 
 # 添加圖表的總標題
-f.suptitle("Variability in Coral Cover Predictions across Configurations", fontsize=12, fontweight='bold')
+f.suptitle("Variability in Coral Cover Predictions across Configurations", fontsize=24, fontweight='bold')
 
 # 添加統一的顏色條，位於右側
 cax = f.add_subplot(gs[:, 1])  # 使用 GridSpec 的右側欄位作為顏色條的位置
-cbar = plt.colorbar(scatter, cax=cax, orientation='vertical')
-cbar.set_label("Standard Deviation", fontsize=12)
+cbar = plt.colorbar(hexbin, cax=cax, orientation='vertical')
+cbar.ax.tick_params(labelsize=16)
+cbar.set_label("Standard Deviation", fontsize=16)
 
 # 保存圖像到 output 資料夾，設定 dpi=400
 output_dir = "output"
 output_path = os.path.join(output_dir, "fig1.png")
-plt.savefig(output_path, dpi=400)
+plt.savefig(output_path, dpi=300)
 
+plt.show()
 # 圖說 地理範圍、年分意義、點的大小、顏色意義 越濃差異越大、投影坐標
