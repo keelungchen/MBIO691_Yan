@@ -119,23 +119,24 @@ import seaborn as sns
 # 載入數據
 data = pd.read_csv('data/coral_forecast.csv', skiprows=[1])
 
+# Group data by site
+# Sites are characterised by a unique (lon, lat) combination. To group sites together, 
+# we can firstly create a new column with the combined longitude and latitude.
+data['lon_lat'] = list(zip(data.longitude, data.latitude))
+
+# 根據 'lon_lat' 分組並計算平均值
+data_mean = data.groupby('lon_lat').mean()
+
 # 計算珊瑚覆蓋率變化百分比
-data['coral_cover_change'] = ((data['coral_cover_2100'] - data['coral_cover_2020']) / data['coral_cover_2020']) * 100
+data_mean['coral_cover_change'] = ((data_mean['coral_cover_2100'] - data_mean['coral_cover_2020']) / data_mean['coral_cover_2020']) * 100
 
 # 計算 SST 和 pH 變化
-data['SST_change'] = data['SST_2100'] - data['SST_2020']
-data['pH_change'] = data['pH_2100'] - data['pH_2020']
+data_mean['SST_change'] = data_mean['SST_2100'] - data_mean['SST_2020']
+data_mean['pH_change'] = data_mean['pH_2100'] - data_mean['pH_2020']
 
 # 移除異常值 (範圍設為 -100% 到 100%)
-filtered_data = data[(data['coral_cover_change'] >= -100) & (data['coral_cover_change'] <= 100)]
+filtered_data = data_mean[(data_mean['coral_cover_change'] >= -100) & (data_mean['coral_cover_change'] <= 100)]
 
-# 使用平均值和標準差來劃分級距
-mean_sst = filtered_data['SST_seasonal'].mean()
-std_sst = filtered_data['SST_seasonal'].std()
-
-# 定義級距範圍
-size_bins = [filtered_data['SST_seasonal'].min(), mean_sst - std_sst, mean_sst + std_sst, filtered_data['SST_seasonal'].max()]
-size_labels = ['L', 'M', 'H']  # 標準差分級的標籤
 
 
 
