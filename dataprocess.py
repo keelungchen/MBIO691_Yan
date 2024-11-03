@@ -154,10 +154,9 @@ scatter1 = ax1.scatter(
     filtered_data['SST_change'], 
     filtered_data['coral_cover_change'], 
     c=filtered_data['pH_change'], 
-    s=5, 
+    s=2, 
     cmap='Purples_r', 
-    edgecolor='none', 
-    alpha=0.7
+    edgecolor='none'
 )
 # 在圖的下方加上顏色條，表示 pH_change 的數值範圍
 cbar1 = plt.colorbar(scatter1, ax=ax1, orientation='horizontal', pad=0.2)
@@ -168,10 +167,9 @@ scatter2 = ax2.scatter(
     filtered_data['SST_change'], 
     filtered_data['coral_cover_change'], 
     c=filtered_data['SST_seasonal'], 
-    s=5, 
+    s=2, 
     cmap='Oranges', 
-    edgecolor='none', 
-    alpha=0.7
+    edgecolor='none'
 )
 # 在圖的下方加上顏色條，表示 SST_seasonal 的數值範圍
 cbar2 = plt.colorbar(scatter2, ax=ax2, orientation='horizontal', pad=0.2)
@@ -182,7 +180,7 @@ fig.text(0.55, 0.25,'SST change (degrees C)', ha='center')  # 設置 X 軸標籤
 fig.text(0, 0.5,'Coral cover change (%)', va='center', rotation='vertical')  # 設置 Y 軸標籤於圖左側中間
 
 # 添加圖表的總標題
-fig.suptitle("Coral cover change with SST, pH change and seasonal SST", fontsize=12)
+fig.suptitle("Coral cover change with SST, pH change and seasonal SST", fontsize=12,fontweight='bold')
 
 
 # 保存圖像到 output 資料夾，設定 dpi=400
