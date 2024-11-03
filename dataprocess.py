@@ -190,56 +190,58 @@ plt.savefig(output_path, dpi=400)
 
 
 ###Fig 3###
-# 匯入所需的庫
+# 導入所需的套件
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 
 # 讀取數據集
 data = pd.read_csv('data/coral_forecast.csv', skiprows=[1])
 
-# 計算珊瑚覆蓋變化量
-# coral_cover_change: 計算從2020到2100年之間的珊瑚覆蓋變化
-data['coral_cover_change'] = data['coral_cover_2100'] - data['coral_cover_2020']
+# 創建一個新的列，表示唯一的 (longitude, latitude) 組合來標識不同的地點
+data['lon_lat'] = list(zip(data.longitude, data.latitude))
 
-# 剃除離群值
-# 使用IQR方法來剃除離群值
-Q1 = data['coral_cover_change'].quantile(0.25)
-Q3 = data['coral_cover_change'].quantile(0.75)
-IQR = Q3 - Q1
+# 根據地點（lon_lat）分組並計算每個地點的變量平均值
+data_mean = data.groupby('lon_lat').mean().reset_index()
 
-# 取 log10 值
-# 過濾掉低於 Q1 - 1.5 * IQR 或高於 Q3 + 1.5 * IQR 的數據，且剔除非正值
-filtered_data = data[(data['coral_cover_change'] >= Q1 - 1.5 * IQR) & 
-                     (data['coral_cover_change'] <= Q3 + 1.5 * IQR) & 
-                     (data['coral_cover_change'] > 0)]
+# 計算珊瑚覆蓋變化的百分比 (以 2100 年相比 2020 年)
+data_mean['coral_cover_change'] = ((data_mean['coral_cover_2100'] - data_mean['coral_cover_2020']) / 
+                                   data_mean['coral_cover_2020']) * 100
 
-# 確認剃除後資料是否非空
-if not filtered_data.empty:
-    # 取 log10 值
-    filtered_data.loc[:, 'coral_cover_change_log'] = np.log10(filtered_data['coral_cover_change'])
+# 計算 SST 和 pH 變化
+data_mean['SST_change'] = data_mean['SST_2100'] - data_mean['SST_2020']
+data_mean['pH_change'] = data_mean['pH_2100'] - data_mean['pH_2020']
 
-    # 開始繪製頻率密度分佈圖
-    plt.figure(figsize=(10, 6))
 
-    # 遍歷所有的模擬配置，並繪製每一個配置的分佈
-    for model_num in filtered_data['model'].unique():
-        # 選取當前配置的數據
-        model_data = filtered_data[filtered_data['model'] == model_num]
-        
-        # 繪製每個配置的密度直方圖
-        plt.hist(model_data['coral_cover_change_log'], bins=30, density=True, alpha=0.5, label=f'配置 {model_num}')
+# 定義函數來剔除離群值
+def remove_outliers(df, columns, threshold=1.5):
+    for column in columns:
+        Q1 = df[column].quantile(0.25)  # 第一四分位數
+        Q3 = df[column].quantile(0.75)  # 第三四分位數
+        IQR = Q3 - Q1  # 計算四分位範圍
+        # 使用 IQR 來定義下限和上限
+        lower_bound = Q1 - threshold * IQR
+        upper_bound = Q3 + threshold * IQR
+        # 篩選出在上下限範圍內的數據
+        df = df[(df[column] >= lower_bound) & (df[column] <= upper_bound)]
+    return df
 
-    # 設定圖表標題和標籤
-    plt.title('21世紀珊瑚覆蓋變化的頻率密度分佈 (log10, 剃除離群值)')
-    plt.xlabel('珊瑚覆蓋變化 (log10(km^2))')
-    plt.ylabel('頻率密度')
-    plt.legend(title="配置")
+# 剔除 'coral_cover_change', 'SST_2100', 'SST_seasonal', 'pH_2100', 'PAR' 列的離群值
+data_mean_clean = remove_outliers(data_mean, ['coral_cover_change', 'SST_change', 'SST_seasonal', 'pH_change', 'PAR'])
 
-    # 顯示圖表
-    plt.show()
+# 繪製清理後的數據
+plt.figure(figsize=(10, 6))
 
-# 顯示圖表
-plt.show()
+# 使用子圖繪製每個變量（SST變化, pH變化, PAR）與珊瑚覆蓋變化之間的關係
+variables = ['SST_change', 'SST_seasonal', 'pH_change', 'PAR']
+for i, var in enumerate(variables, 1):
+    plt.subplot(2, 2, i)  # 2x2 子圖布局
+    plt.scatter(data_mean_clean[var], data_mean_clean['coral_cover_change'], alpha=0.6, s=2)
+    plt.xlabel(var)  # 設置 X 軸標籤
+    plt.ylabel('Coral Cover Change (%)')  # 設置 Y 軸標籤
+    plt.title(f'{var} vs Coral Cover Change')  # 設置標題
+
+# 調整圖表布局，避免重疊
+plt.tight_layout()
+
 # 顯示圖表
 plt.show()
