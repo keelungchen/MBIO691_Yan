@@ -142,52 +142,8 @@ coral_cover_99th_percentile = filtered_data['coral_cover_change'].quantile(0.99)
 # 7. 過濾掉超過 99% 分位數的離群值
 filtered_data = filtered_data[filtered_data['coral_cover_change'] <= coral_cover_99th_percentile]
 
-# Classify SST_seasonal into categories
-filtered_data['SST_seasonal_class'] = pd.cut(
-    filtered_data['SST_seasonal'],
-    bins=[-np.inf, 0.5, 1, np.inf],
-    labels=['<=0.5 std', '0.5-1 std', '>1 std']
-)
 
-# Define marker styles for each class
-marker_styles = {
-    '<=0.5 std': 'o',  # circle
-    '0.5-1 std': 's',  # square
-    '>1 std': 'D'      # diamond
-}
-
-# 清除當前圖形
 plt.figure()  # 開啟新圖形，避免重疊
-# Plot scatter plot with different markers for SST_seasonal classes
-for sst_class, marker in marker_styles.items():
-    subset = filtered_data[filtered_data['SST_seasonal_class'] == sst_class]
-    plt.scatter(
-        subset['SST_change'], 
-        subset['coral_cover_change'], 
-        c=subset['pH_change'], 
-        s=subset['SST_seasonal'],  # Scale size for visual effect
-        cmap='BuPu_r', 
-        alpha=0.7,
-        marker=marker,
-        edgecolor='none',
-        label=sst_class
-    )
-
-
-# 保存圖像到 output 資料夾，設定 dpi=400
-output_dir = "output"
-output_path = os.path.join(output_dir, "Fig2.png")
-plt.savefig(output_path, dpi=400)
-
-scatter = plt.scatter(
-    filtered_data['SST_change'], 
-    filtered_data['coral_cover_change'], 
-    c=filtered_data['pH_change'], 
-    marker=filtered_data['SST_seasonal_class'],  # 調整大小以增強視覺效果
-    cmap='BuPu_r', alpha=0.7
-)
-
-
 # 使用 scatter 畫散佈圖，設定:
 # X 軸為 SST_change，Y 軸為 coral_cover_change
 # 點的顏色依據 pH_change，並使用 'viridis' 色譜（由低到高顏色變化）
@@ -196,9 +152,18 @@ scatter = plt.scatter(
     filtered_data['SST_change'], 
     filtered_data['coral_cover_change'], 
     c=filtered_data['pH_change'], 
-    s=filtered_data['SST_seasonal'],  # 調整大小以增強視覺效果
-    cmap='BuPu_r', alpha=0.7
+    s=5,
+    cmap='BuPu_r',  edgecolor='none', alpha=0.7
 )
+
+scatter = plt.scatter(
+    filtered_data['SST_change'], 
+    filtered_data['coral_cover_change'], 
+    c=filtered_data['SST_seasonal'],
+    s=1, 
+    cmap='Oranges',  edgecolor='none', alpha=0.7
+)
+
 
 # 加入顏色條，用於表示 pH_change 的數值範圍
 plt.colorbar(scatter, label='pH change')
@@ -208,7 +173,10 @@ plt.xlabel('SST change (degrees C)')
 plt.ylabel('Coral cover change (%)')
 plt.title('珊瑚覆蓋率變化與 SST 變化的關係\n(以 pH 變化為顏色, SST 季節變化為點大小)')
 
-
+# 保存圖像到 output 資料夾，設定 dpi=400
+output_dir = "output"
+output_path = os.path.join(output_dir, "Fig2.png")
+plt.savefig(output_path, dpi=400)
 
 
 ###Fig 3###
