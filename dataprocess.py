@@ -190,4 +190,56 @@ plt.savefig(output_path, dpi=400)
 
 
 ###Fig 3###
+# 匯入所需的庫
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 
+# 讀取數據集
+data = pd.read_csv('data/coral_forecast.csv', skiprows=[1])
+
+# 計算珊瑚覆蓋變化量
+# coral_cover_change: 計算從2020到2100年之間的珊瑚覆蓋變化
+data['coral_cover_change'] = data['coral_cover_2100'] - data['coral_cover_2020']
+
+# 剃除離群值
+# 使用IQR方法來剃除離群值
+Q1 = data['coral_cover_change'].quantile(0.25)
+Q3 = data['coral_cover_change'].quantile(0.75)
+IQR = Q3 - Q1
+
+# 取 log10 值
+# 過濾掉低於 Q1 - 1.5 * IQR 或高於 Q3 + 1.5 * IQR 的數據，且剔除非正值
+filtered_data = data[(data['coral_cover_change'] >= Q1 - 1.5 * IQR) & 
+                     (data['coral_cover_change'] <= Q3 + 1.5 * IQR) & 
+                     (data['coral_cover_change'] > 0)]
+
+# 確認剃除後資料是否非空
+if not filtered_data.empty:
+    # 取 log10 值
+    filtered_data.loc[:, 'coral_cover_change_log'] = np.log10(filtered_data['coral_cover_change'])
+
+    # 開始繪製頻率密度分佈圖
+    plt.figure(figsize=(10, 6))
+
+    # 遍歷所有的模擬配置，並繪製每一個配置的分佈
+    for model_num in filtered_data['model'].unique():
+        # 選取當前配置的數據
+        model_data = filtered_data[filtered_data['model'] == model_num]
+        
+        # 繪製每個配置的密度直方圖
+        plt.hist(model_data['coral_cover_change_log'], bins=30, density=True, alpha=0.5, label=f'配置 {model_num}')
+
+    # 設定圖表標題和標籤
+    plt.title('21世紀珊瑚覆蓋變化的頻率密度分佈 (log10, 剃除離群值)')
+    plt.xlabel('珊瑚覆蓋變化 (log10(km^2))')
+    plt.ylabel('頻率密度')
+    plt.legend(title="配置")
+
+    # 顯示圖表
+    plt.show()
+
+# 顯示圖表
+plt.show()
+# 顯示圖表
+plt.show()
