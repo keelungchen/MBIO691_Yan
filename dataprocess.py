@@ -189,10 +189,13 @@ output_path = os.path.join(output_dir, "Fig2.png")
 plt.savefig(output_path, dpi=400)
 
 
-###Fig 3###
+##########################################
+# Fig. 3                                 #
+##########################################
 # 導入所需的套件
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy.stats import linregress
 
 # 讀取數據集
 data = pd.read_csv('data/coral_forecast.csv', skiprows=[1])
@@ -232,13 +235,22 @@ data_mean_clean = remove_outliers(data_mean, ['coral_cover_change', 'SST_change'
 plt.figure(figsize=(10, 6))
 
 # 使用子圖繪製每個變量（SST變化, pH變化, PAR）與珊瑚覆蓋變化之間的關係
-variables = ['SST_change', 'SST_seasonal', 'pH_change', 'PAR']
 for i, var in enumerate(variables, 1):
     plt.subplot(2, 2, i)  # 2x2 子圖布局
-    plt.scatter(data_mean_clean[var], data_mean_clean['coral_cover_change'], alpha=0.6, s=2)
+    x = data_mean_clean[var]
+    y = data_mean_clean['coral_cover_change']
+    
+    # 繪製灰色散點
+    plt.scatter(x, y, color='gray', alpha=0.6, s=1)
+    
+    # 使用線性回歸添加相關性線
+    slope, intercept, r_value, p_value, std_err = linregress(x, y)
+    plt.plot(x, slope * x + intercept, color='black', linestyle='--', linewidth=1)
+    
+    # 顯示相關性係數
     plt.xlabel(var)  # 設置 X 軸標籤
     plt.ylabel('Coral Cover Change (%)')  # 設置 Y 軸標籤
-    plt.title(f'{var} vs Coral Cover Change')  # 設置標題
+    plt.title(f'{var} vs Coral Cover Change\nR² = {r_value**2:.2f}')  # 顯示 R² 值於標題
 
 # 調整圖表布局，避免重疊
 plt.tight_layout()
