@@ -110,7 +110,9 @@ plt.savefig(output_path, dpi=400)
 
 # 圖說 地理範圍、年分意義、點的大小、顏色意義 越濃差異越大、投影坐標
 
-###Fig 2###
+##########################################
+# Fig. 2                                 #
+##########################################
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -144,34 +146,44 @@ filtered_data = filtered_data[filtered_data['coral_cover_change'] <= coral_cover
 
 
 plt.figure()  # 開啟新圖形，避免重疊
-# 使用 scatter 畫散佈圖，設定:
-# X 軸為 SST_change，Y 軸為 coral_cover_change
-# 點的顏色依據 pH_change，並使用 'viridis' 色譜（由低到高顏色變化）
-# 點的大小依據 SST_seasonal（乘以 10 是為了增加視覺效果）
-scatter = plt.scatter(
+# 建立子圖形區域，將圖分為 1 行 2 列
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6), sharex=True, sharey=True)
+
+# 左邊的散佈圖：SST_change vs coral_cover_change，以 pH_change 進行上色
+scatter1 = ax1.scatter(
     filtered_data['SST_change'], 
     filtered_data['coral_cover_change'], 
     c=filtered_data['pH_change'], 
-    s=5,
-    cmap='BuPu_r',  edgecolor='none', alpha=0.7
+    s=5, 
+    cmap='Purples_r', 
+    edgecolor='none', 
+    alpha=0.7
 )
+# 在圖的下方加上顏色條，表示 pH_change 的數值範圍
+cbar1 = plt.colorbar(scatter1, ax=ax1, orientation='horizontal', pad=0.2)
+cbar1.set_label('pH change')  # 設定顏色條標籤
 
-scatter = plt.scatter(
+# 右邊的散佈圖：SST_change vs coral_cover_change，以 SST_seasonal 進行上色
+scatter2 = ax2.scatter(
     filtered_data['SST_change'], 
     filtered_data['coral_cover_change'], 
-    c=filtered_data['SST_seasonal'],
-    s=1, 
-    cmap='Oranges',  edgecolor='none', alpha=0.7
+    c=filtered_data['SST_seasonal'], 
+    s=5, 
+    cmap='Oranges', 
+    edgecolor='none', 
+    alpha=0.7
 )
+# 在圖的下方加上顏色條，表示 SST_seasonal 的數值範圍
+cbar2 = plt.colorbar(scatter2, ax=ax2, orientation='horizontal', pad=0.2)
+cbar2.set_label('SST seasonal')  # 設定顏色條標籤
 
+# 統一設定 X 軸和 Y 軸的標籤
+fig.text(0.55, 0.25,'SST change (degrees C)', ha='center')  # 設置 X 軸標籤於圖中央下方
+fig.text(0, 0.5,'Coral cover change (%)', va='center', rotation='vertical')  # 設置 Y 軸標籤於圖左側中間
 
-# 加入顏色條，用於表示 pH_change 的數值範圍
-plt.colorbar(scatter, label='pH change')
+# 添加圖表的總標題
+fig.suptitle("Coral cover change with SST, pH change and seasonal SST", fontsize=12)
 
-# 設定圖標題及軸標籤
-plt.xlabel('SST change (degrees C)')
-plt.ylabel('Coral cover change (%)')
-plt.title('珊瑚覆蓋率變化與 SST 變化的關係\n(以 pH 變化為顏色, SST 季節變化為點大小)')
 
 # 保存圖像到 output 資料夾，設定 dpi=400
 output_dir = "output"
