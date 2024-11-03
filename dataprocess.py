@@ -185,7 +185,7 @@ fig.suptitle("Coral cover change with SST, pH change and seasonal SST", fontsize
 
 # 保存圖像到 output 資料夾，設定 dpi=400
 output_dir = "output"
-output_path = os.path.join(output_dir, "Fig2.png")
+output_path = os.path.join(output_dir, "Fig4.png")
 plt.savefig(output_path, dpi=400)
 
 
@@ -234,7 +234,8 @@ data_mean_clean = remove_outliers(data_mean, ['coral_cover_change', 'SST_change'
 
 # 繪製清理後的數據
 plt.figure(figsize=(10, 6))
-
+# 定義要繪製的變數列表
+variables = ['SST_change', 'SST_seasonal', 'pH_change', 'PAR']
 # 使用子圖繪製每個變量（SST變化, pH變化, PAR）與珊瑚覆蓋變化之間的關係
 for i, var in enumerate(variables, 1):
     plt.subplot(2, 2, i)  # 2x2 子圖布局
@@ -256,7 +257,7 @@ for i, var in enumerate(variables, 1):
 
 # 保存圖像到 output 資料夾，設定 dpi=400
 output_dir = "output"
-output_path = os.path.join(output_dir, "Fig3.png")
+output_path = os.path.join(output_dir, "Fig2.png")
 plt.savefig(output_path, dpi=400)
 
 # 顯示圖表
