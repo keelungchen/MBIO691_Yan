@@ -58,7 +58,7 @@ for i in range(2):
     ax.set_extent([central_lon - width, central_lon + width, central_lat - height, central_lat + height], ccrs.PlateCarree())
 
     # 加入海岸線和陸地特徵
-    ax.add_feature(cfeature.COASTLINE, linewidth=0.1)
+    ax.add_feature(cfeature.COASTLINE, linewidth=0.5)
     ax.add_feature(cfeature.LAND, facecolor='#b6cbcf', edgecolor='#57868f', linewidth=0.5)
 
     # 添加經緯度線
@@ -73,15 +73,16 @@ for i in range(2):
     # 繪製變異性資料點，設置相同的 vmin 和 vmax 來保持顏色一致
     # Use hexbin to show density
     hexbin = ax.hexbin(
-        data_std['longitude'],
-        data_std['latitude'],
-        C=data_values[i],
-        gridsize=30,  # Adjust grid size
-        cmap=colormaps[i],
+        data_std['longitude'],  # Longitude values for each data point
+        data_std['latitude'],  # Latitude values for each data point
+        C=data_values[i], # The value associated with each data point
+        gridsize=100,  # Adjust grid size, larger smaller
+        cmap=colormaps[i], # Specifies the color maps
         mincnt=1,  # Show only cells with at least 1 point
-        vmin=vmin,
-        vmax=vmax,
-        transform=ccrs.PlateCarree()
+        vmin=vmin, # Sets the minimum value for color mapping
+        vmax=vmax, # Sets the maximum value for color mapping
+        reduce_C_function=np.mean,  # Specifies that values in each hexagon should be averaged rather than summed
+        transform=ccrs.PlateCarree() #coordinates are in Plate Carree projection
     )
 
     # 在地圖左下角顯示年份標題
