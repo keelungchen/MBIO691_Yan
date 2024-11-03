@@ -307,7 +307,7 @@ latitude_change = data.groupby(['latitude_bin', 'model'])['coral_cover_change'].
 mean_change = latitude_change.groupby('latitude_bin')['coral_cover_change'].mean().reset_index()
 
 # 設置圖形大小
-plt.figure(figsize=(10, 6))
+plt.figure(figsize=(20, 12))
 # 使用顏色映射，讓每個 model 顯示更明顯的顏色
 colors = cm.get_cmap('tab20', 12)  # 使用 12 種顏色
 
@@ -322,7 +322,7 @@ plt.plot(mean_change['latitude_bin'], mean_change['coral_cover_change'],
          label='Mean', linewidth=2.5, color='black')
 
 # 添加英文標題和坐標軸標籤
-plt.title('Average Coral Cover Change Rate by Latitude')
+plt.title('Average Coral Cover Change Rate by Latitude',fontweight='bold')
 plt.xlabel('Latitude')
 plt.ylabel('Average Coral Cover Change Rate (%)')
 
@@ -330,5 +330,8 @@ plt.ylabel('Average Coral Cover Change Rate (%)')
 plt.legend(title="Model Number", bbox_to_anchor=(1.05, 1), loc='upper left')
 
 output_dir = "output"
+# 設定輸出路徑
 output_path = os.path.join(output_dir, "Fig4.svg")
-plt.savefig(output_path, dpi=400)
+
+# 儲存圖形，提升解析度和圖像品質
+plt.savefig(output_path, dpi=400, format='svg', bbox_inches='tight', transparent=True)
