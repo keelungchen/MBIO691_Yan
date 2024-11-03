@@ -44,6 +44,9 @@ data_mean_clean = remove_outliers(data_mean, ['coral_cover_change', 'SST_change'
 # 繪製清理後的數據
 plt.figure(figsize=(8, 6), constrained_layout=True)  # 使用 constrained_layout=True 自動調整佈局
 
+# 設置主標題
+plt.suptitle("Relationships between Variables and Coral Cover Change", fontsize=14, fontweight='bold')
+
 # 定義要繪製的變數列表
 variables = ['SST_change', 'SST_seasonal', 'pH_change', 'PAR']
 # 使用子圖繪製每個變量（SST變化, pH變化, PAR）與珊瑚覆蓋變化之間的關係
@@ -59,13 +62,16 @@ for i, var in enumerate(variables, 1):
     slope, intercept, r_value, p_value, std_err = linregress(x, y)
     plt.plot(x, slope * x + intercept, color='black', linestyle='--', linewidth=1)
     
+    # 添加 R^2 值於子圖內部
+    plt.text(0.05, 0.9, f'$R^2 = {r_value**2:.2f}$', transform=plt.gca().transAxes, fontsize=12,
+             verticalalignment='top')
+
     # 顯示相關性係數
     plt.xlabel(var)  # 設置 X 軸標籤
     plt.ylabel('Coral Cover Change (%)')  # 設置 Y 軸標籤
-    plt.title(f'{var} vs Coral Cover Change\nR² = {r_value**2:.2f}')  # 顯示 R² 值於標題
 
 
 # 保存圖像到 output 資料夾，設定 dpi=500
 output_dir = "output"
 output_path = os.path.join(output_dir, "Fig2.png")
-plt.savefig(output_path, dpi=300)
+plt.savefig(output_path, dpi=180)
