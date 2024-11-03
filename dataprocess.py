@@ -129,31 +129,13 @@ data['pH_change'] = data['pH_2100'] - data['pH_2020']
 # 移除異常值 (範圍設為 -100% 到 100%)
 filtered_data = data[(data['coral_cover_change'] >= -100) & (data['coral_cover_change'] <= 100)]
 
-# 繪製圖形
-plt.figure(figsize=(10, 6))
-sns.scatterplot(
-    x='SST_change', 
-    y='coral_cover_change', 
-    hue='pH_change', 
-    size='SST_seasonal', 
-    sizes=(0.1, 10), 
-    data=filtered_data, 
-    palette='viridis', 
-    edgecolor='none',
-    alpha = 0.7
-)
+# 使用平均值和標準差來劃分級距
+mean_sst = filtered_data['SST_seasonal'].mean()
+std_sst = filtered_data['SST_seasonal'].std()
 
-# 添加標題和標籤
-plt.title('Predicted Percentage Change in Coral Cover Over 21st Century')
-plt.xlabel('SST Change (2100 - 2020) (°C)')
-plt.ylabel('Coral Cover Change (%)')
-
-# 加入色條和大小圖例
-plt.colorbar(label='pH Change (2100 - 2020)')
-plt.legend(title='SST Seasonal Cycle')
-
-# 顯示圖形
-plt.show()
+# 定義級距範圍
+size_bins = [filtered_data['SST_seasonal'].min(), mean_sst - std_sst, mean_sst + std_sst, filtered_data['SST_seasonal'].max()]
+size_labels = ['L', 'M', 'H']  # 標準差分級的標籤
 
 
 
