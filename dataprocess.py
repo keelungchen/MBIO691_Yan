@@ -269,6 +269,7 @@ plt.show()
 # 導入所需的套件
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import os
 
 # 讀取數據集
@@ -298,17 +299,27 @@ data = remove_outliers(data, ['coral_cover_change'])
 
 # 將緯度分組為 0.5 的間隔
 data['latitude_bin'] = (data['latitude'] // 1) * 1
-# 計算每個 0.5 緯度區間和每個 model 的平均珊瑚覆蓋變化率
+
+# 計算每個 1 度緯度區間和每個 model 的平均珊瑚覆蓋變化率
 latitude_change = data.groupby(['latitude_bin', 'model'])['coral_cover_change'].mean().reset_index()
+
+# 計算所有 model 的平均值
+mean_change = latitude_change.groupby('latitude_bin')['coral_cover_change'].mean().reset_index()
 
 # 設置圖形大小
 plt.figure(figsize=(10, 6))
-# 為不同的 model 繪製折線圖，每個 model 使用不同顏色，並調整線的粗細
-for model_num in latitude_change['model'].unique():
-    # 過濾出當前 model 的數據
+# 使用顏色映射，讓每個 model 顯示更明顯的顏色
+colors = cm.get_cmap('tab20', 12)  # 使用 12 種顏色
+
+# 為不同的 model 繪製折線圖，每個 model 使用不同顏色
+for model_num in sorted(latitude_change['model'].unique()):
     model_data = latitude_change[latitude_change['model'] == model_num]
-    # 繪製當前 model 的折線，線條粗細設定為1
-    plt.plot(model_data['latitude_bin'], model_data['coral_cover_change'], label=f'Model {model_num}', linewidth=0.5)
+    plt.plot(model_data['latitude_bin'], model_data['coral_cover_change'], 
+             label=f'Model {model_num}', linewidth=1.5, color=colors(model_num))
+
+# 繪製平均變化率折線，使用較粗的黑線
+plt.plot(mean_change['latitude_bin'], mean_change['coral_cover_change'], 
+         label='Mean', linewidth=2.5, color='black')
 
 # 添加英文標題和坐標軸標籤
 plt.title('Average Coral Cover Change Rate by Latitude')
