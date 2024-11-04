@@ -4,7 +4,6 @@
 # Import packages
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
 import os
 
 # Read the dataset
@@ -44,7 +43,7 @@ mean_change = latitude_change.groupby('latitude_bin')['coral_cover_change'].mean
 # Set figure size
 plt.figure(figsize=(8,6), constrained_layout=True)
 # Use color mapping to make each model more distinguishable
-colors = cm.get_cmap('tab20', 12)  # use 12 colors
+colors = plt.get_cmap('tab20', 12)  # use 12 colors
 
 #Plot line graphs for different models, using different colors for each model
 for model_num in sorted(latitude_change['model'].unique()):
