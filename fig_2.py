@@ -47,11 +47,6 @@ plt.figure(figsize=(8, 6), constrained_layout=True)  # 使用 constrained_layout
 # Set main title
 plt.suptitle("Relationships between Variables and Coral Cover Change", fontsize=14, fontweight='bold')
 
-
-Here’s the translation of the Chinese comments in the code into English:
-
-python
-複製程式碼
 ##########################################
 # Fig. 2                                 #
 ##########################################
