@@ -6,8 +6,9 @@ The `fig_1~3.py` are scripts used for generating plots, each corresponding to a 
 
 ### Guide to the contents
 - The **data** folder is for storing the raw data. 
-- The **output** folder is for saving the generated images. 
-<sub>(fig4 is an extra one which can be ignored)</sub>
+- The **output** folder is for saving the generated images.
+ 
+<sub>(fig_4 is an extra one which can be ignored)</sub>
 
 ---
 ### Fig. 1
