@@ -42,7 +42,7 @@ latitude_change = data.groupby(['latitude_bin', 'model'])['coral_cover_change'].
 mean_change = latitude_change.groupby('latitude_bin')['coral_cover_change'].mean().reset_index()
 
 # 設置圖形大小
-plt.figure(figsize=(20, 12))
+plt.figure(figsize=(8,6), constrained_layout=True)
 # 使用顏色映射，讓每個 model 顯示更明顯的顏色
 colors = cm.get_cmap('tab20', 12)  # 使用 12 種顏色
 
@@ -50,23 +50,23 @@ colors = cm.get_cmap('tab20', 12)  # 使用 12 種顏色
 for model_num in sorted(latitude_change['model'].unique()):
     model_data = latitude_change[latitude_change['model'] == model_num]
     plt.plot(model_data['latitude_bin'], model_data['coral_cover_change'], 
-             label=f'Model {model_num}', linewidth=1.5, color=colors(model_num))
+             label=f'Model {model_num}', linewidth= 2, color=colors(model_num))
 
 # 繪製平均變化率折線，使用較粗的黑線
 plt.plot(mean_change['latitude_bin'], mean_change['coral_cover_change'], 
-         label='Mean', linewidth=2.5, color='black')
+         label='Mean', linewidth= 3, color='black')
 
 # 添加英文標題和坐標軸標籤
-plt.title('Average Coral Cover Change Rate by Latitude',fontweight='bold')
-plt.xlabel('Latitude')
-plt.ylabel('Average Coral Cover Change Rate (%)')
+plt.title('Average Coral Cover Change Rate by Latitude',fontweight='bold', fontsize=16)
+plt.xlabel('Latitude', fontsize=14)
+plt.ylabel('Average Coral Cover Change Rate (%)', fontsize=14)
 
 # 顯示圖例在圖外部，並按 Model 0 到 Model 11 排序
-plt.legend(title="Model Number", bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.legend(bbox_to_anchor=(0.88, 1), loc='upper right', frameon=False)
 
 output_dir = "output"
 # 設定輸出路徑
 output_path = os.path.join(output_dir, "Fig3.svg")
 
 # 儲存圖形，提升解析度和圖像品質
-plt.savefig(output_path, dpi=400, format='svg', bbox_inches='tight', transparent=True)
+plt.savefig(output_path, dpi=600, format='svg', bbox_inches='tight', transparent=True)
