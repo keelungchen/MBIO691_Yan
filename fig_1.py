@@ -108,7 +108,7 @@ cbar.set_label("Standard Deviation", fontsize=16)
 
 # 保存圖像到 output 資料夾，設定 dpi=400
 output_dir = "output"
-output_path = os.path.join(output_dir, "fig1.png")
+output_path = os.path.join(output_dir, "Fig1.png")
 plt.savefig(output_path, dpi=300)
 
 # 圖說 地理範圍、年分意義、點的大小、顏色意義 越濃差異越大、投影坐標
