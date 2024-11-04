@@ -69,4 +69,4 @@ output_dir = "output"
 output_path = os.path.join(output_dir, "Fig3.svg")
 
 # 儲存圖形，提升解析度和圖像品質
-plt.savefig(output_path, dpi=600, format='svg', bbox_inches='tight', transparent=True)
+plt.savefig(output_path, dpi=600, format='svg', bbox_inches='tight')
