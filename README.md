@@ -26,4 +26,4 @@ The `fig_1~3.py` are scripts used for generating plots, each corresponding to a 
 ### Fig .3
 ![Fig3](output/Fig3.svg)
 
-**Fig. 3.**  
+**Fig. 3.**  Average coral cover change rate (from 2010–2020 to 2090–2100) along latitude across models. The X-axis represents latitude, with positive and negative values indicating northern and southern latitudes, respectively. The Y-axis shows the coral cover change rate, calculated as the average across all longitude data within each degree of latitude. Different colors represent various model configurations (0~11), while the thick black line denotes the average change across all models.
