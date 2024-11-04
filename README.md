@@ -20,7 +20,7 @@ The `fig_1~3.py` are scripts used for generating plots, each corresponding to a 
 ### Fig. 2
 ![Fig2](output/Fig2.png)
 
-**Fig. 2.** 模型變數與預測珊瑚覆蓋率變化的散佈圖，
+**Fig. 2.** Scatter plot of model variables and predicted coral cover change rate, where coral cover change represents the average percentage change across all model projections from 2010–2020 to 2090–2100. Outliers have been removed using the Interquartile Range (IQR) method, with a total sample size of N=48,643. SST_change and pH_change represent changes in sea surface temperature and pH, respectively, over the 21st century. SST_seasonal denotes the difference between winter and summer mean temperatures, and PAR refers to Benthic Photosynthetically Available Radiation. The black dashed line indicates a linear regression fit, with R² representing the correlation.
 
 ---
 ### Fig .3
